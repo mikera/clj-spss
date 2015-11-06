@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.opendatafoundation.data.FileFormatInfo;
-import org.opendatafoundation.data.Utils;
 
 /**
  * SPSS numeric variable

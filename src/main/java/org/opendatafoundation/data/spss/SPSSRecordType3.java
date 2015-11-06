@@ -91,13 +91,14 @@ public class SPSSRecordType3 extends SPSSAbstractRecordType {
     }
   }
 
-  public String toString() {
+  @SuppressWarnings("rawtypes")
+public String toString() {
     String str = "";
     str += "\nRECORD TYPE 3 - VALUE LABEL RECORD";
     str += "\nLocation        : " + fileLocation;
     str += "\nRecord Type     : " + recordTypeCode;
     str += "\nNumber labels   : " + numberOfLabels;
-    Iterator iter = valueLabel.entrySet().iterator();
+    Iterator<?> iter = valueLabel.entrySet().iterator();
     while(iter.hasNext()) {
       Map.Entry entry = (Map.Entry) iter.next();
       byte[] value = (byte[]) entry.getKey();

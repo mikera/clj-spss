@@ -65,7 +65,7 @@ public class SPSSDataRecord {
   public void read(SPSSFile is, boolean fromDisk) throws IOException, SPSSFileException {
     file = is;
     fileLocation = file.getFilePointer();
-    Iterator varIterator = file.variableMap.keySet().iterator();
+    Iterator<?> varIterator = file.variableMap.keySet().iterator();
 
     while(varIterator.hasNext()) {
       SPSSVariable var = file.variableMap.get(varIterator.next());
@@ -260,7 +260,7 @@ public class SPSSDataRecord {
         return this;
       }
 
-      public DataValue build() {
+      public DataValue<?> build() {
         if(type == SPSSVariable.VariableType.NUMERIC) return new DataValue<Double>(doubleValue);
         return new DataValue<String>(postProcessString(stringValueBuilder.toString()));
       }

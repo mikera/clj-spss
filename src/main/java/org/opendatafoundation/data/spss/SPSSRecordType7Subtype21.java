@@ -166,7 +166,6 @@ public class SPSSRecordType7Subtype21 extends SPSSAbstractRecordType {
       return value;
     }
 
-    @SuppressWarnings("StringBufferReplaceableByString")
     public String toString() {
       return new StringBuilder() //
           .append("\nLabels") //
