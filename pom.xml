@@ -17,5 +17,15 @@
   		<artifactId>cljunit</artifactId>
   		<version>0.3.0</version>
   	</dependency>
+  	<dependency>
+  		<groupId>net.mikera</groupId>
+  		<artifactId>core.matrix</artifactId>
+  		<version>0.43.0</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>net.mikera</groupId>
+  		<artifactId>clojure-utils</artifactId>
+  		<version>0.5.0</version>
+  	</dependency>
   </dependencies>
 </project>
