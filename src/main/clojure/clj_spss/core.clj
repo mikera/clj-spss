@@ -21,29 +21,34 @@
       spssfile)))
 
 (defn converter 
-  "Gets a function that parses an SPSS variable string value" 
+  "Gets a function that parses an SPSS variable value" 
   [^SPSSVariable v]
   (cond 
     (instance? SPSSStringVariable v) identity
-    (instance? SPSSNumericVariable v) (fn [s] (and s (read-string s)))
+    (instance? SPSSNumericVariable v) 
+      (let [format ^String (.getSPSSFormat v)]
+        (cond
+          :else (fn [s] (and s (read-string s)))))
     :else (error "Unable to recognise SPSS variable type")))
 
 (defn load-spss
   "Loads a SPSS .sav file into a Clojure data structure"
-  [file]
-  (let [spssfile (load-spssfile file)
-        vcount (.getVariableCount spssfile)
-        rowcount (.getRecordCount spssfile)
-        variables (mapv #(.getVariable spssfile (int %)) (range vcount))
-        variable-names (mapv #(.getName ^SPSSVariable %) variables)
-        ^FileFormatInfo ffi (FileFormatInfo.)
-        columns (mapv 
-                  (fn [^SPSSVariable v]
-                    (let [conv (converter v)]
-                      (mapv 
-                        (fn [i] (conv (.getValueAsString v (int i) ffi)))
-                        (range rowcount))))
-                  variables)]
-    (ds/dataset variable-names
-                (zipmap variable-names 
-                        columns))))
+  ([file]
+    (load-spss file nil))
+  ([file options]
+    (let [spssfile (load-spssfile file)
+          vcount (.getVariableCount spssfile)
+          rowcount (.getRecordCount spssfile)
+          variables (mapv #(.getVariable spssfile (int %)) (range vcount))
+          variable-names (mapv #(.getName ^SPSSVariable %) variables)
+          ^FileFormatInfo ffi (FileFormatInfo.)
+          columns (mapv 
+                    (fn [^SPSSVariable v]
+                      (let [conv (converter v)]
+                        (mapv 
+                          (fn [i] (conv (.getValueAsString v (int i) ffi)))
+                          (range rowcount))))
+                    variables)]
+      (ds/dataset variable-names
+                  (zipmap variable-names 
+                          columns)))))

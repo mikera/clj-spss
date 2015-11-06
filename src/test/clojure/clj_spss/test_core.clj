@@ -6,3 +6,7 @@
 (deftest test-load
   (let [ds (load-spss "src/test/resources/org/opendatafoundation/data/spss/DatabaseTest.sav")]
     (is (= [200 11] (shape ds)))))
+
+;(deftest test-strings
+;  (let [ds (load-spss "src/test/resources/org/opendatafoundation/data/spss/VeryLongStringVariables.sav")]
+;    (is (= [200 11] (shape ds)))))

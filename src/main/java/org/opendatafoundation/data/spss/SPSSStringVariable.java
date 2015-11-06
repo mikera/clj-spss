@@ -144,6 +144,8 @@ public class SPSSStringVariable extends SPSSVariable {
     else if(obsNumber > 0 && data.size() == 0) throw new SPSSFileException("No data availble");
     else strValue = data.get(obsNumber - 1);
 
+    if (strValue==null) return null;
+    
     // format output
     if(dataFormat.format == FileFormatInfo.Format.ASCII) {
       if(dataFormat.asciiFormat == FileFormatInfo.ASCIIFormat.FIXED) { // padding
