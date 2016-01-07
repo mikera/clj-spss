@@ -35,6 +35,14 @@
 		</dependency>
 	</dependencies>
 
+	<repositories>
+		<repository>
+			<id>clojars.org</id>
+			<name>Clojars repository</name>
+			<url>https://clojars.org/repo</url>
+		</repository>
+	</repositories>
+
 	<distributionManagement>
 		<repository>
 			<id>clojars.org</id>
@@ -44,9 +52,9 @@
 	</distributionManagement>
 
 	<scm>
-		<connection>scm:git:git@github.com:mikera/clj-spss.git</connection>
+		<connection>scm:git:git@github.com:mikera/clj-spss</connection>
 		<url>https://github.com/mikera/clj-spss</url>
-		<developerConnection>scm:git:git@github.com:mikera/clj-spss.git</developerConnection>
+		<developerConnection>scm:git:git@github.com:mikera/clj-spss</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 </project>
