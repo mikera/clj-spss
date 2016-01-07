@@ -20,7 +20,7 @@
   	<dependency>
   		<groupId>net.mikera</groupId>
   		<artifactId>core.matrix</artifactId>
-  		<version>0.43.0</version>
+  		<version>0.48.0</version>
   	</dependency>
   	<dependency>
   		<groupId>net.mikera</groupId>
@@ -30,7 +30,7 @@
   	<dependency>
   		<groupId>org.clojure</groupId>
   		<artifactId>clojure</artifactId>
-  		<version>1.8.0-beta2</version>
+  		<version>1.8.0-RC4</version>
   	</dependency>
   </dependencies>
 </project>
