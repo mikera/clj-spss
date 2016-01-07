@@ -41,6 +41,7 @@ public abstract class SPSSAbstractRecordType {
 
   public abstract void read(SPSSFile is) throws IOException, SPSSFileException;
 
+  @Override
   public abstract String toString();
 
 }

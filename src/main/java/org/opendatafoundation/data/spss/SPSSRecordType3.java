@@ -40,71 +40,75 @@ import java.util.Map;
  * @author Pascal Heus (pheus@opendatafoundation.org)
  */
 public class SPSSRecordType3 extends SPSSAbstractRecordType {
-  int recordTypeCode;
+	int recordTypeCode;
 
-  int numberOfLabels;
+	int numberOfLabels;
 
-  Map<byte[], String> valueLabel = new LinkedHashMap<byte[], String>();
+	Map<byte[], String> valueLabel = new LinkedHashMap<byte[], String>();
 
-  public void read(SPSSFile is) throws IOException, SPSSFileException {
-    // position in file
-    fileLocation = is.getFilePointer();
+	@Override
+	public void read(SPSSFile is) throws IOException, SPSSFileException {
+		// position in file
+		fileLocation = is.getFilePointer();
 
-    // record type
-    recordTypeCode = is.readSPSSInt();
-    if(recordTypeCode != 3) throw new SPSSFileException(
-        "Error reading variableRecord: bad record type [" + recordTypeCode + "]. Expecting Record Type 3.");
+		// record type
+		recordTypeCode = is.readSPSSInt();
+		if (recordTypeCode != 3)
+			throw new SPSSFileException(
+					"Error reading variableRecord: bad record type [" + recordTypeCode + "]. Expecting Record Type 3.");
 
-    // number of labels
-    numberOfLabels = is.readSPSSInt();
+		// number of labels
+		numberOfLabels = is.readSPSSInt();
 
-    // labels
-    for(int i = 0; i < numberOfLabels; i++) {
-      // read the label value
-      byte[] value = new byte[8];
-      is.read(value);
+		// labels
+		for (int i = 0; i < numberOfLabels; i++) {
+			// read the label value
+			byte[] value = new byte[8];
+			is.read(value);
 
-      if(is.isBigEndian) {
-        // flip value
-        // TODO: don't do this for string variables (but we don't know
-        // the type here....)
-        for(int j = 0; j < 3; j++) {
-          byte tmp;
-          tmp = value[j];
-          value[j] = value[7 - j];
-          value[7 - j] = tmp;
-        }
-      }
+			if (is.isBigEndian) {
+				// flip value
+				// TODO: don't do this for string variables (but we don't know
+				// the type here....)
+				for (int j = 0; j < 3; j++) {
+					byte tmp;
+					tmp = value[j];
+					value[j] = value[7 - j];
+					value[7 - j] = tmp;
+				}
+			}
 
-      // the following byte in an unsigned integer (max value is 60)
-      int labelLength = is.read();
+			// the following byte in an unsigned integer (max value is 60)
+			int labelLength = is.read();
 
-      // read the label
-      String label = is.readSPSSString(labelLength);
-      // value labels are stored in chunks of 8-bytes with space allocated
-      // for length+1 characters
-      // --> we need to skip unused bytes in the last chunk
-      if(((labelLength + 1) % 8) != 0) is.skipBytes(8 - ((labelLength + 1) % 8));
+			// read the label
+			String label = is.readSPSSString(labelLength);
+			// value labels are stored in chunks of 8-bytes with space allocated
+			// for length+1 characters
+			// --> we need to skip unused bytes in the last chunk
+			if (((labelLength + 1) % 8) != 0)
+				is.skipBytes(8 - ((labelLength + 1) % 8));
 
-      // Store in map
-      valueLabel.put(value, label);
-    }
-  }
+			// Store in map
+			valueLabel.put(value, label);
+		}
+	}
 
-  @SuppressWarnings("rawtypes")
-public String toString() {
-    String str = "";
-    str += "\nRECORD TYPE 3 - VALUE LABEL RECORD";
-    str += "\nLocation        : " + fileLocation;
-    str += "\nRecord Type     : " + recordTypeCode;
-    str += "\nNumber labels   : " + numberOfLabels;
-    Iterator<?> iter = valueLabel.entrySet().iterator();
-    while(iter.hasNext()) {
-      Map.Entry entry = (Map.Entry) iter.next();
-      byte[] value = (byte[]) entry.getKey();
-      String label = (String) entry.getValue();
-      str += "\n " + SPSSUtils.byte8ToDouble(value) + "=" + label;
-    }
-    return (str);
-  }
+	@Override
+	@SuppressWarnings("rawtypes")
+	public String toString() {
+		String str = "";
+		str += "\nRECORD TYPE 3 - VALUE LABEL RECORD";
+		str += "\nLocation        : " + fileLocation;
+		str += "\nRecord Type     : " + recordTypeCode;
+		str += "\nNumber labels   : " + numberOfLabels;
+		Iterator<?> iter = valueLabel.entrySet().iterator();
+		while (iter.hasNext()) {
+			Map.Entry entry = (Map.Entry) iter.next();
+			byte[] value = (byte[]) entry.getKey();
+			String label = (String) entry.getValue();
+			str += "\n " + SPSSUtils.byte8ToDouble(value) + "=" + label;
+		}
+		return (str);
+	}
 }

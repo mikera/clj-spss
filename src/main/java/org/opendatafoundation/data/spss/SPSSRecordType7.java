@@ -39,45 +39,48 @@ import java.util.List;
  * @author Pascal Heus (pheus@opendatafoundation.org)
  */
 public class SPSSRecordType7 extends SPSSAbstractRecordType {
-  int recordTypeCode;
+	int recordTypeCode;
 
-  int recordSubtypeCode;
+	int recordSubtypeCode;
 
-  int dataElementLength;
+	int dataElementLength;
 
-  int numberOfDataElements;
+	int numberOfDataElements;
 
-  List<byte[]> dataElement;
+	List<byte[]> dataElement;
 
-  public void read(SPSSFile is) throws IOException, SPSSFileException {
-    // position in file
-    fileLocation = is.getFilePointer();
+	@Override
+	public void read(SPSSFile is) throws IOException, SPSSFileException {
+		// position in file
+		fileLocation = is.getFilePointer();
 
-    // record type
-    recordTypeCode = is.readSPSSInt();
-    if(recordTypeCode != 7) throw new SPSSFileException(
-        "Error reading variableRecord: bad record type [" + recordTypeCode + "]. Expecting Record Type 7.");
-    // subtype
-    recordSubtypeCode = is.readSPSSInt();
-    // data elements
-    dataElementLength = is.readSPSSInt();
-    numberOfDataElements = is.readSPSSInt();
-    dataElement = new ArrayList<byte[]>();
-    byte[] data = new byte[dataElementLength];
-    for(int i = 0; i < numberOfDataElements; i++) {
-      is.read(data);
-      dataElement.add(data);
-    }
-  }
+		// record type
+		recordTypeCode = is.readSPSSInt();
+		if (recordTypeCode != 7)
+			throw new SPSSFileException(
+					"Error reading variableRecord: bad record type [" + recordTypeCode + "]. Expecting Record Type 7.");
+		// subtype
+		recordSubtypeCode = is.readSPSSInt();
+		// data elements
+		dataElementLength = is.readSPSSInt();
+		numberOfDataElements = is.readSPSSInt();
+		dataElement = new ArrayList<byte[]>();
+		byte[] data = new byte[dataElementLength];
+		for (int i = 0; i < numberOfDataElements; i++) {
+			is.read(data);
+			dataElement.add(data);
+		}
+	}
 
-  public String toString() {
-    String str = "";
-    str += "\nRECORD TYPE 7 - GENERIC";
-    str += "\nLocation        : " + fileLocation;
-    str += "\nRecord Type     : " + recordTypeCode;
-    str += "\nRecord Subtype  : " + recordSubtypeCode;
-    str += "\nData elements   : " + numberOfDataElements;
-    str += "\nElement length  : " + dataElementLength;
-    return (str);
-  }
+	@Override
+	public String toString() {
+		String str = "";
+		str += "\nRECORD TYPE 7 - GENERIC";
+		str += "\nLocation        : " + fileLocation;
+		str += "\nRecord Type     : " + recordTypeCode;
+		str += "\nRecord Subtype  : " + recordSubtypeCode;
+		str += "\nData elements   : " + numberOfDataElements;
+		str += "\nElement length  : " + dataElementLength;
+		return (str);
+	}
 }

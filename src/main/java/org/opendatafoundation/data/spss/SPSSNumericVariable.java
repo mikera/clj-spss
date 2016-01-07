@@ -88,6 +88,7 @@ public class SPSSNumericVariable extends SPSSVariable {
 	 *
 	 * @throws SPSSFileException
 	 */
+	@Override
 	public SPSSVariableCategory addCategory(byte[] byteValue, String label) throws SPSSFileException {
 		double value = SPSSUtils.byte8ToDouble(byteValue);
 		return (addCategory(value, label));
@@ -118,6 +119,7 @@ public class SPSSNumericVariable extends SPSSVariable {
 	 *
 	 * @throws SPSSFileException
 	 */
+	@Override
 	public SPSSVariableCategory getCategory(byte[] byteValue) throws SPSSFileException {
 		double value = SPSSUtils.byte8ToDouble(byteValue);
 		return (getCategory(value));
@@ -135,6 +137,7 @@ public class SPSSNumericVariable extends SPSSVariable {
 	/**
 	 * @return A string representing variable in SPSS syntax
 	 */
+	@Override
 	public String getSPSSFormat() {
 		String formatStr = "";
 		switch (variableRecord.writeFormatType) {
@@ -248,12 +251,11 @@ public class SPSSNumericVariable extends SPSSVariable {
 
 	/**
 	 * Returns an observation value as a string based on the specified data ad
-	 * variable format. The specified record number is
-	 * used to determine which value is read. If the observation number is
-	 * between 1 and the number of observation in the file is specified and
-	 * assuming the data has been loaded in memory, the relevant record number
-	 * value is returned. If the observation number is 0, the variable value is
-	 * returned instead.
+	 * variable format. The specified record number is used to determine which
+	 * value is read. If the observation number is between 1 and the number of
+	 * observation in the file is specified and assuming the data has been
+	 * loaded in memory, the relevant record number value is returned. If the
+	 * observation number is 0, the variable value is returned instead.
 	 *
 	 * @param obsNumber
 	 *            the record. Either 0 or between 1 and the number of
@@ -262,6 +264,7 @@ public class SPSSNumericVariable extends SPSSVariable {
 	 *            the file format
 	 * @throws SPSSFileException
 	 */
+	@Override
 	public String getValueAsString(int obsNumber, FileFormatInfo dataFormat) throws SPSSFileException {
 		String strValue;
 		double val = getValueAsDouble(obsNumber);

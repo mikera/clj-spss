@@ -55,6 +55,7 @@ public class SPSSRecordType7Subtype13 extends SPSSAbstractRecordType {
 	// subtype 13
 	String longNamesStr;
 
+	@Override
 	public void read(SPSSFile is) throws IOException, SPSSFileException {
 		// position in file
 		fileLocation = is.getFilePointer();
@@ -92,6 +93,7 @@ public class SPSSRecordType7Subtype13 extends SPSSAbstractRecordType {
 		}
 	}
 
+	@Override
 	public String toString() {
 		String str = "";
 		str += "\nRECORD TYPE 7 SUBTYPE 13 - LONG VARIABLE NAMES";
