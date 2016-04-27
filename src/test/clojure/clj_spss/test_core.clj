@@ -23,6 +23,7 @@
         v (variable sf "HEIGHT")]
     (is (= 1 (get-value sf 0 0))) ;; IID
     (is (= 137.34 (get-value v 0)))
+    (is (= 123456789.34 (get-value sf 1 6)))
     (is (nil? (get-value v 3)))))
 
 (comment 
