@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.mikera</groupId>
 	<artifactId>clj-spss</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.2</version>
 	<description>SPSS .sav file reader for Clojure</description>
 
 	<parent>
@@ -59,6 +59,6 @@
 		<connection>scm:git:git@github.com:mikera/clj-spss.git</connection>
 		<url>https://github.com/mikera/clj-spss.git</url>
 		<developerConnection>scm:git:git@github.com:mikera/clj-spss.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>clj-spss-0.0.2</tag>
 	</scm>
 </project>
