@@ -32,6 +32,6 @@ Builds up work by the Open Data Foundation, see: https://github.com/daxplore/sps
 
 
 ;; Write out data as a .csv file
-(write-csv data "out.csv")
+(sav/write-csv data "out.csv")
 
 ```
