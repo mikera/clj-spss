@@ -127,7 +127,7 @@
 (defn dataset-from-spss
   "Loads a SPSS .sav file into a Clojure core.matrix dataset structure"
   ([file]
-    (load-spss file nil))
+    (dataset-from-spss file nil))
   ([file options]
     (let [spssfile (to-spssfile file)
           vcount (variable-count spssfile)
