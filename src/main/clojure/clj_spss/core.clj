@@ -42,15 +42,6 @@
       file
       (load-spssfile file))))
 
-(defn write-csv
-  "Loads an SPSS .sav file into an SPSSFile"
-  ([spssdata file]
-    (with-open [out-file (io/writer file)]
-      (csv/write-csv out-file
-                     (concat
-                       [(ds/column-names spssdata)]
-                       (map m/eseq (m/slices spssdata)))))))
-
 (defn converter 
   "Gets a function that converts an SPSS variable value to a Clojure value.
 
@@ -133,8 +124,8 @@
          :length (long (.getLength v))})
       vars))))
 
-(defn load-spss
-  "Loads a SPSS .sav file into a Clojure data structure"
+(defn dataset-from-spss
+  "Loads a SPSS .sav file into a Clojure core.matrix dataset structure"
   ([file]
     (load-spss file nil))
   ([file options]
@@ -154,3 +145,17 @@
       (ds/dataset variable-names
                   (zipmap variable-names 
                           columns)))))
+
+(defn write-csv
+  "Writes a csv file. 
+
+   Data may be either a core.matrix dataset or a loaded SPSSFile"
+  ([spssdata file]
+    (let [spssdata (cond 
+                     (instance? SPSSFile spssdata) (dataset-from-spss spssdata)
+                     :else spssdata)]
+      (with-open [out-file (io/writer file)]
+        (csv/write-csv out-file
+                       (concat
+                         [(ds/column-names spssdata)]
+                         (map m/eseq (m/slices spssdata))))))))

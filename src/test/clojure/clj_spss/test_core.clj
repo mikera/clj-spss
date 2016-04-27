@@ -7,8 +7,10 @@
 
 (deftest test-load
   (testing "regular file path"
-    (let [ds (load-spss "src/test/resources/org/opendatafoundation/data/spss/DatabaseTest.sav")]
-      (is (= [200 11] (m/shape ds))))))
+    (let [sf (load-spssfile "src/test/resources/org/opendatafoundation/data/spss/DatabaseTest.sav")
+          ds (dataset-from-spss sf)]
+      (is (= [200 11] (m/shape ds)))
+      (is (= 50.0 (m/mget ds 6 6) (get-value sf 6 6))))))
 
 ;(deftest test-strings
 ;  (let [ds (load-spss "src/test/resources/org/opendatafoundation/data/spss/VeryLongStringVariables.sav")]
