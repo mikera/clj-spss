@@ -14,6 +14,17 @@
 ;  (let [ds (load-spss "src/test/resources/org/opendatafoundation/data/spss/VeryLongStringVariables.sav")]
 ;    (is (= [200 11] (shape ds)))))
 
+(deftest test-lengths
+  (let [vi (variable-info "src/test/resources/org/opendatafoundation/data/spss/VeryLongStrings.sav")]
+    (is (= [ 6, 255, 255, 255, 8, 10, 1430, 1430, 6, 1430] (map :length vi)))))
+
+(deftest test-number 
+  (let [sf (load-spssfile "src/test/resources/org/opendatafoundation/data/spss/TestNumber.sav")
+        v (variable sf "HEIGHT")]
+    (is (= 1 (get-value sf 0 0))) ;; IID
+    (is (= 137.34 (get-value v 0)))
+    (is (nil? (get-value v 3)))))
+
 (comment 
   (doseq [file ["src/test/resources/org/opendatafoundation/data/spss/DatabaseTest.sav"
                 "src/test/resources/org/opendatafoundation/data/spss/StringCategories.sav"

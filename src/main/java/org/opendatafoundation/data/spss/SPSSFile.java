@@ -1716,7 +1716,7 @@ public class SPSSFile extends RandomAccessFile {
 		uniqueID = str;
 	}
 
-	private SPSSVariable getVariableByName(String variableName) {
+	public SPSSVariable getVariableByName(String variableName) {
 		for (SPSSVariable var : variableMap.values()) {
 			if (var.getName().equals(variableName)) {
 				return var;

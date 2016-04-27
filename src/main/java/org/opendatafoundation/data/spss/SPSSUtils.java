@@ -31,6 +31,7 @@ package org.opendatafoundation.data.spss;
 
 import java.nio.charset.Charset;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
@@ -93,7 +94,7 @@ public class SPSSUtils {
   }
 
   /**
-   * Converts a numeric value representing a date/time in SPSS into a Java GregorianCalendar. Date/time in SPSS are stored as the number of seconds elapsed since midnight on October 14th 1582 (start of the Gergorian calendar)
+   * Converts a numeric value representing a date/time in SPSS into a Java GregorianCalendar. Date/time in SPSS are stored as the number of seconds elapsed since midnight on October 14th 1582 (start of the Gregorian calendar)
    *
    * @param value the numeric representation of the date/time to convert
    * @return A GregorianCalendar object
@@ -125,5 +126,19 @@ public class SPSSUtils {
     calendar.add(Calendar.MILLISECOND, hundredsOffset * 10);
 
     return (calendar);
+  }
+  
+  /**
+   * Converts a numeric value representing a date/time in SPSS into a Java Date. 
+   * 
+   * Date/time in SPSS are stored as the number of seconds elapsed since midnight on October 14th 1582 (start of the Gregorian calendar)
+   *
+   * @param value the numeric representation of the date/time to convert
+   * @return A GregorianCalendar object
+   */
+  public static Date numericToDate(double value) {
+	double secondsSince1970= value - 12219379200.0; // Change date baseline from midnight on October 14th 1582 to January 1st 1970
+
+	return new Date((long)(secondsSince1970*1000));
   }
 }

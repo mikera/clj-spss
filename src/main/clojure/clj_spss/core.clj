@@ -12,6 +12,8 @@
 
 (set! *warn-on-reflection* true)
 
+(def ^FileFormatInfo DEFAULT-FILEFORMATINFO (FileFormatInfo.))
+
 (defn to-file 
   "Coerces the argument is a java.io.File. Handles existing files, and Strings interpreted as file paths."
   (^java.io.File [file]
@@ -62,7 +64,7 @@
   (cond 
     (instance? SPSSStringVariable v) 
       (fn [^SPSSVariable v i]
-        (let [s (.getValueAsString v (int i) ffi)]
+        (let [s (.getValueAsString v (int (inc i)) ffi)]
           (try
             (when-not (empty? s) 
               s)
@@ -74,13 +76,13 @@
           (str/includes? (str/upper-case format) "DATE")
             (fn [^SPSSNumericVariable v i] 
               (try
-                (let [d (.getValueAsDouble v (int i))]
+                (let [d (.getValueAsDouble v (int (inc i)))]
                   (when-not (.isMissingValueCode v d)
-                    (SPSSUtils/numericToCalendar d)))
+                    (SPSSUtils/numericToDate d)))
                 (catch Throwable t
                   (error "Can't read value from SPSS variable of type: " (class v) "with format: " format))))
           :else (fn [^SPSSNumericVariable v i] 
-                  (let [s (.getValueAsString v (int i) ffi)]
+                  (let [s (.getValueAsString v (int (inc i)) ffi)]
                     (try
                       (when-not (empty? s) 
                         (read-string s))
@@ -99,9 +101,27 @@
     (.getRecordCount spssfile)))
 
 (defn variables 
+  "Gets all variables from an SPSSFile"
   ([^SPSSFile spssfile]
     (let [vcount (variable-count spssfile)]
       (mapv #(.getVariable spssfile (int %)) (range vcount)))))
+
+(defn variable
+  "Gets a specific variable from an SPSSFile. 
+   Variable may be specified by either a name or an integer index"
+  (^SPSSVariable [^SPSSFile spssfile name-or-index]
+    (if (string? name-or-index)
+      (.getVariableByName spssfile (str name-or-index))
+      (.getVariable spssfile (int name-or-index)))))
+
+(defn get-value
+  "Gets a value from an SPSS variable. 
+
+   Indexed from first row = 0 (consistent with core.matrix slice numbering)"
+  ([^SPSSFile spssfile var-name-or-index index]
+    (get-value (variable spssfile var-name-or-index) index))
+  ([^SPSSVariable spssvar index]
+    ((converter spssvar DEFAULT-FILEFORMATINFO) spssvar index)))
 
 (defn variable-info ([file]
   (let [spssfile (to-spssfile file)
@@ -109,7 +129,8 @@
     (mapv 
       (fn [^SPSSVariable v]
         {:name (.getName v)
-         :format (.getSPSSFormat v)})
+         :format (.getSPSSFormat v)
+         :length (long (.getLength v))})
       vars))))
 
 (defn load-spss
@@ -122,7 +143,7 @@
           rowcount (record-count spssfile)
           variables (variables spssfile)
           variable-names (mapv #(.getName ^SPSSVariable %) variables)
-          ^FileFormatInfo ffi (FileFormatInfo.)
+          ffi DEFAULT-FILEFORMATINFO
           columns (mapv 
                     (fn [^SPSSVariable v]
                       (let [conv (converter v ffi)]
