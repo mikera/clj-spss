@@ -4,7 +4,7 @@ SPSS .sav file reader for Clojure, intended for use by Clojure Data Scientists w
 
 Builds up work by the Open Data Foundation, see: https://github.com/daxplore/spssreader
 
-# Example Usage
+## Example Usage
 
 ```clojure
 (require '[clj-spss.core :as sav])
