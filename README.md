@@ -17,6 +17,7 @@ Builds up work by the Open Data Foundation, see: https://github.com/daxplore/sps
 (get-value spss "id" 0)
 => 70.0
 
+
 ;; Inspect variables in a .sav file
 (sav/variable-info "src/test/resources/org/opendatafoundation/data/spss/VeryLongStrings.sav")
 => [{:name "ID",
