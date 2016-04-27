@@ -22,4 +22,5 @@
                 "src/test/resources/org/opendatafoundation/data/spss/VeryLongStringVariables.sav"]]
     (write-csv (load-spss file) (str/replace file ".sav" ".csv")))
   
+  (variable-info "src/test/resources/org/opendatafoundation/data/spss/VeryLongStrings.sav")
   )

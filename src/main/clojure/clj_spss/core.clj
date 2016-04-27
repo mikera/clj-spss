@@ -33,6 +33,13 @@
       (.loadData spssfile)
       spssfile)))
 
+(defn to-spssfile 
+  "Coerces to a SPSSFile in-memory representation."
+  (^SPSSFile [file]
+    (if (instance? SPSSFile file) 
+      file
+      (load-spssfile file))))
+
 (defn write-csv
   "Loads an SPSS .sav file into an SPSSFile"
   ([spssdata file]
@@ -57,7 +64,7 @@
       (fn [^SPSSVariable v i]
         (let [s (.getValueAsString v (int i) ffi)]
           (try
-            (when-not (.isMissingValueCode v s) 
+            (when-not (empty? s) 
               s)
             (catch Throwable t
               (error "Can't read value: " s " from SPSS variable of type: " (class v) "with format: " format)))))
@@ -81,15 +88,39 @@
                         (error "Can't read value: " s " from SPSS variable of type: " (class v) "with format: " format)))))))
     :else (error "Unable to recognise SPSS variable type")))
 
+(defn variable-count 
+  "Gets the number of variables in an SPSS file"
+  ([^SPSSFile spssfile]
+    (.getVariableCount spssfile)))
+
+(defn record-count 
+  "Gets the number of record in an SPSS file"
+  ([^SPSSFile spssfile]
+    (.getRecordCount spssfile)))
+
+(defn variables 
+  ([^SPSSFile spssfile]
+    (let [vcount (variable-count spssfile)]
+      (mapv #(.getVariable spssfile (int %)) (range vcount)))))
+
+(defn variable-info ([file]
+  (let [spssfile (to-spssfile file)
+        vars (variables spssfile)]
+    (mapv 
+      (fn [^SPSSVariable v]
+        {:name (.getName v)
+         :format (.getSPSSFormat v)})
+      vars))))
+
 (defn load-spss
   "Loads a SPSS .sav file into a Clojure data structure"
   ([file]
     (load-spss file nil))
   ([file options]
-    (let [spssfile (load-spssfile file)
-          vcount (.getVariableCount spssfile)
-          rowcount (.getRecordCount spssfile)
-          variables (mapv #(.getVariable spssfile (int %)) (range vcount))
+    (let [spssfile (to-spssfile file)
+          vcount (variable-count spssfile)
+          rowcount (record-count spssfile)
+          variables (variables spssfile)
           variable-names (mapv #(.getName ^SPSSVariable %) variables)
           ^FileFormatInfo ffi (FileFormatInfo.)
           columns (mapv 
