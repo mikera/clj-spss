@@ -118,11 +118,13 @@
   (let [spssfile (to-spssfile file)
         vars (variables spssfile)]
     (mapv 
-      (fn [^SPSSVariable v]
+      (fn [^SPSSVariable v i]
         {:name (.getName v)
+         :index i
          :format (.getSPSSFormat v)
          :length (long (.getLength v))})
-      vars))))
+      vars
+      (range (count vars))))))
 
 (defn dataset-from-spss
   "Loads a SPSS .sav file into a Clojure core.matrix dataset structure"
