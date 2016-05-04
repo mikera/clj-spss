@@ -34,7 +34,7 @@
                 "src/test/resources/org/opendatafoundation/data/spss/TestNumber.sav"
                 "src/test/resources/org/opendatafoundation/data/spss/VeryLongStrings.sav"
                 "src/test/resources/org/opendatafoundation/data/spss/VeryLongStringVariables.sav"]]
-    (write-csv (dataset-from-spss file) (str/replace file ".sav" ".csv")))
+    (write-csv (load-spssfile file) (str/replace file ".sav" ".csv") {:variable-labels true}))
   
   (variable-info "src/test/resources/org/opendatafoundation/data/spss/VeryLongStrings.sav")
   )

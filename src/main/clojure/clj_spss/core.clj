@@ -151,13 +151,23 @@
 (defn write-csv
   "Writes a csv file. 
 
-   Data may be either a core.matrix dataset or a loaded SPSSFile"
+   Data may be a file or a loaded SPSSFile.
+
+   Options map may include:
+     :variable-names - include variable names as first row of csv files (boolean, default true)
+     :variable-labels - include variable labels as first row of csv files (boolean, default false)
+     :append-labels - append variable labels to variable names, separated with : "
   ([spssdata file]
-    (let [spssdata (cond 
-                     (instance? SPSSFile spssdata) (dataset-from-spss spssdata)
-                     :else spssdata)]
+        (write-csv spssdata file nil))
+  ([spssdata file options]
+    (let [spssdata (to-spssfile spssdata)
+          options (merge {:variable-names true} options)
+          spssdataset (dataset-from-spss spssdata)]
       (with-open [out-file (io/writer file)]
         (csv/write-csv out-file
                        (concat
-                         [(ds/column-names spssdata)]
-                         (map m/eseq (m/slices spssdata))))))))
+                         (when (:variable-names options) 
+                           [(ds/column-names spssdataset)])
+                         (when (:variable-labels options) 
+                           [(mapv (fn [^SPSSVariable v] (.getLabel v)) (variables spssdata))])
+                         (map m/eseq (m/slices spssdataset))))))))
