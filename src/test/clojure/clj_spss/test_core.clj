@@ -24,9 +24,16 @@
   (let [sf (load-spssfile "src/test/resources/org/opendatafoundation/data/spss/TestNumber.sav")
         v (variable sf "HEIGHT")]
     (is (= 1 (get-value sf 0 0))) ;; IID
+    (is (= 1 (get-value sf "WEIGHT" 0))) ;; WEIGHT
     (is (= 137.34 (get-value v 0)))
     (is (= 123456789.34 (get-value sf 1 6)))
     (is (nil? (get-value v 3)))))
+
+(deftest test-get-values
+  (let [sf (load-spssfile "src/test/resources/org/opendatafoundation/data/spss/TestNumber.sav")
+        v (variable sf "IID")]
+    (is (= [1 2 3 4 5 6 7] (get-values v)))
+    (is (= [1 2 3 4 5 6 7] (get-values sf 0)))))
 
 (comment 
   (doseq [file ["src/test/resources/org/opendatafoundation/data/spss/DatabaseTest.sav"

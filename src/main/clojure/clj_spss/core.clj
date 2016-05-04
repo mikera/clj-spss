@@ -62,9 +62,9 @@
             (catch Throwable t
               (error "Can't read value: " s " from SPSS variable of type: " (class v) "with format: " format)))))
     (instance? SPSSNumericVariable v) 
-      (let [format ^String (.getSPSSFormat v)]
+      (let [format ^String (str/upper-case (.getSPSSFormat v))]
         (cond
-          (str/includes? (str/upper-case format) "DATE")
+          (or (str/includes? format "DATE") (str/includes? format "TIME"))
             (fn [^SPSSNumericVariable v i] 
               (try
                 (let [d (.getValueAsDouble v (int (inc i)))]
@@ -114,6 +114,17 @@
   ([^SPSSVariable spssvar index]
     ((converter spssvar DEFAULT-FILEFORMATINFO) spssvar index)))
 
+(defn get-values
+  "Gets all values from an SPSS variable. 
+
+   Indexed from first row = 0 (consistent with core.matrix slice numbering)"
+  ([^SPSSFile spssfile var-name-or-index]
+    (get-values (variable spssfile var-name-or-index)))
+  ([^SPSSVariable spssvar]
+    (let [conv (converter spssvar DEFAULT-FILEFORMATINFO)
+          rcount (.getNumberOfObservations spssvar)]
+      (mapv #(conv spssvar %) (range rcount)))))
+
 (defn variable-info ([file]
   (let [spssfile (to-spssfile file)
         vars (variables spssfile)]
@@ -162,12 +173,20 @@
   ([spssdata file options]
     (let [spssdata (to-spssfile spssdata)
           options (merge {:variable-names true} options)
-          spssdataset (dataset-from-spss spssdata)]
+          spssdataset (dataset-from-spss spssdata)
+          vars (variables spssdata)
+          rcount (record-count spssdata)
+          vcount (count vars)]
       (with-open [out-file (io/writer file)]
         (csv/write-csv out-file
                        (concat
                          (when (:variable-names options) 
                            [(ds/column-names spssdataset)])
                          (when (:variable-labels options) 
-                           [(mapv (fn [^SPSSVariable v] (.getLabel v)) (variables spssdata))])
-                         (map m/eseq (m/slices spssdataset))))))))
+                           [(mapv (fn [^SPSSVariable v] (.getLabel v)) vars)])
+                         (mapv (fn [row]
+                                 (mapv 
+                                   (fn [^SPSSVariable v]
+                                     (get-value v row))
+                                   vars))
+                               (range rcount))))))))
