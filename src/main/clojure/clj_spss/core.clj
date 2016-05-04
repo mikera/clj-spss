@@ -131,6 +131,7 @@
     (mapv 
       (fn [^SPSSVariable v i]
         {:name (.getName v)
+         :label (.getLabel v)
          :index i
          :format (.getSPSSFormat v)
          :length (long (.getLength v))})
