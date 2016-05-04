@@ -43,5 +43,8 @@
                 "src/test/resources/org/opendatafoundation/data/spss/VeryLongStringVariables.sav"]]
     (write-csv (load-spssfile file) (str/replace file ".sav" ".csv") {:variable-labels true}))
   
+  (let [file "C:/Users/Mike/Google Drive/Unilever Data Repo/Raw Datasets/STAGE 3/Innovation Studies/Home Use Testing/Consumer Preference/090519BKK0RSH00 Papillon/09-0519 SYN TH_Project Papillon_SPSS.sav"]
+    (write-csv (load-spssfile file) "src/test/resources/org/opendatafoundation/data/spss/SAVTestPapillon.csv"))
+  
   (variable-info "src/test/resources/org/opendatafoundation/data/spss/VeryLongStrings.sav")
   )

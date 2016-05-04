@@ -39,7 +39,7 @@ public class SPSSVariableCategory {
 
   public String label = ""; // < The category label
 
-  boolean isMissing = false; // < Indicates if this should be treated as a missing value
+  public boolean isMissing = false; // < Indicates if this should be treated as a missing value
 
   long freq = 0; // The category frequency (not implemented)
 

@@ -5,7 +5,7 @@
   (:require [clojure.java.io :as io])
   (:require [clojure.string :as str])
   (:require [mikera.cljutils.error :refer [error]])
-  (:import [org.opendatafoundation.data.spss SPSSFile SPSSUtils SPSSVariable SPSSStringVariable SPSSNumericVariable])
+  (:import [org.opendatafoundation.data.spss SPSSFile SPSSUtils SPSSVariable SPSSVariableCategory SPSSStringVariable SPSSNumericVariable])
   (:import [org.opendatafoundation.data FileFormatInfo])
   (:import [java.io File])
   (:import [java.net URI]))
@@ -62,8 +62,21 @@
             (catch Throwable t
               (error "Can't read value: " s " from SPSS variable of type: " (class v) "with format: " format)))))
     (instance? SPSSNumericVariable v) 
-      (let [format ^String (str/upper-case (.getSPSSFormat v))]
+      (let [^SPSSNumericVariable v v 
+            format ^String (str/upper-case (.getSPSSFormat v))]
         (cond
+          (.hasValueLabels v)
+            (let []
+              (fn [^SPSSNumericVariable v i] 
+                (try
+                  (let [d (.getValueAsDouble v (int (inc i)))
+                        cat (.getCategory v d)]
+                    (if cat
+                      (if-not (boolean (.isMissing cat))
+                        (.label cat))
+                      d))
+                  (catch Throwable t
+                    (error "Can't read category from SPSS variable of type: " (class v) "with format: " format " error: " t)))))
           (or (str/includes? format "DATE") (str/includes? format "TIME"))
             (fn [^SPSSNumericVariable v i] 
               (try
